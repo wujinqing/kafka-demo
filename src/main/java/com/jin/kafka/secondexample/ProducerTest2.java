@@ -56,6 +56,15 @@ public class ProducerTest2 {
         // 当聚集的信息大小到达batch.size时将会忽略该设置， 当linger.ms时间到了，但batch.size没达到，以linger.ms的设置为准
         props.setProperty(ProducerConfig.LINGER_MS_CONFIG, "10000");
 
+        /**
+         * buffer.memory: 用于存放等待发送到服务器端的消息缓存的总的缓存大小
+         */
+        props.setProperty(ProducerConfig.BUFFER_MEMORY_CONFIG, "1024");
+
+        /**
+         * client.id: 用于追踪消息的来源
+         */
+        props.setProperty(ProducerConfig.CLIENT_ID_CONFIG, "");
         props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
         props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
 
