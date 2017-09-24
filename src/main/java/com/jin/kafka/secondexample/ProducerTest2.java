@@ -23,7 +23,7 @@ public class ProducerTest2 {
         Properties props = new Properties();
 
         // bootstrap.servers:设置Broker服务器地址列表, 格式：host1:port1,host2:port2,...
-        props.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "172.20.33.234:9092");
+        props.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
 
         // acks: 在请求被认为完成之前，Producer需要服务器接收到消息。
         // 当acks=all时，服务器能保证至少一次(at least one)收到消息，消息具有最强的可靠性保证，能保证不会丢失。
