@@ -16,6 +16,6 @@ public class HikariTest {
         HikariConfig config = new HikariConfig(ResourceLoader.loadProperties("hikari.properties"));
         HikariDataSource ds = new HikariDataSource(config);
 
-        ds.getConnection()
+//        ds.getConnection()
     }
 }
