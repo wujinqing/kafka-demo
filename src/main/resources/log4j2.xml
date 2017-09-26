@@ -19,7 +19,7 @@
             <!--
             <PatternLayout pattern="时间：【%d{yyyy-MM-dd HH:mm:ss.SSS}】 【[%t]】 日志级别：【%-5level】 %logger{36} -类名： 【%F】，%l方法名：【%M】，行号： 【%L】 - %msg%n "></PatternLayout>
             -->
-            <PatternLayout pattern="%l-[%-5level]- %d{yyyy-MM-dd HH:mm:ss.SSS} - %msg%n "></PatternLayout>
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS}[%-4level]-%l-%msg%n "></PatternLayout>
         </Console>
 
 
@@ -32,17 +32,10 @@
         </Logger>
         -->
 
-        <logger name="log4jdbc.log4j2" level="info" additivity="false">
-
-            <MarkerFilter marker="LOG4JDBC_OTHER" onMatch="DENY" onMismatch="NEUTRAL"/>
-            <appender-ref ref="Console"/>
-
-
-                    </logger>
-        <!--
+        <!-- -->
            <Root level="INFO">
                <AppenderRef ref="Console"/>
            </Root>
-           -->
+
                 </Loggers>
             </Configuration>

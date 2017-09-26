@@ -30,13 +30,15 @@ dependencies {
             "com.alibaba:druid:1.1.3",
             "org.springframework:spring-context:${springVersion}",
             "org.springframework:spring-orm:${springVersion}",
+            "org.springframework:spring-tx:${springVersion}",
             "org.hibernate:hibernate-core:5.1.10.Final",
             'mysql:mysql-connector-java:5.1.6',
             'org.mybatis:mybatis:3.4.5',
             'org.mybatis:mybatis-spring:1.3.1',
             'com.zaxxer:HikariCP:2.7.1',
             'org.jdbcdslog:jdbcdslogexp2:2.1',
-            "org.springframework:spring-tx:${springVersion}"
+            'org.bgee.log4jdbc-log4j2:log4jdbc-log4j2-jdbc4.1:1.16'
+
     )
 
 //    compile ("org.springframework:spring-context:${springVersion}")
