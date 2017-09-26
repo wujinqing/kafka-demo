@@ -3,8 +3,11 @@
 ### 配置信息说明
 > HikariCP uses milliseconds for all time values.
 
-### dataSourceClassName 驱动类
-> 示例: dataSourceClassName=com.mysql.jdbc.Driver
+### dataSourceClassName 数据源类
+> 示例: 根据jdbcUrl自动提供(一般不设置)。
+
+### driverClassName 驱动类名
+> 默认可以不设置，HikariCP会根据jdbcUrl获取。
 
 ### jdbcUrl 连接URL
 > 示例: jdbcUrl=jdbc:mysql://localhost:3306/kafka?characterEncoding=utf8
