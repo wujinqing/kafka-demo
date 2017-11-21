@@ -2,9 +2,14 @@
 
 
 ### 启动服务
+官网下载
+> http://kafka.apache.org/downloads
+
+解压
+> tar -xzf kafka_2.11-1.0.0.tgz
 
 进入kafka安装目录
-> cd kafka_2.11-0.11.0.1
+> cd kafka_2.11-1.0.0
 
 启动ZooKeeper服务器
 > ./bin/zookeeper-server-start.sh ./config/zookeeper.properties
