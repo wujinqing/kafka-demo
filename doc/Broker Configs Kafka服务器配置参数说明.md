@@ -21,6 +21,6 @@
 |socket.send.buffer.bytes|socket的发送缓冲区，socket的调优参数SO_SNDBUFF|socket.send.buffer.bytes=102400|
 |socket.receive.buffer.bytes|socket的接受缓冲区，socket的调优参数SO_RCVBUFF|socket.receive.buffer.bytes=102400|
 |socket.request.max.bytes|socket请求的最大数值，防止serverOOM，message.max.bytes必然要小于socket.request.max.bytes，会被topic创建时的指定参数覆盖|socket.request.max.bytes=104857600|
-
+|num.partitions|每个topic的默认partitions数量，会被topic创建时的指定参数覆盖|num.partitions=1|
 
 
