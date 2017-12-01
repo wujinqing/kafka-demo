@@ -87,8 +87,44 @@ Each partition is replicated across a configurable number of servers for fault t
 每台服务器都作为部分分区的leader也作为其他分区的follower，这样就达到了很好的负载均衡。
 
 
+### Producers 生产者
+Producers将数据发布到topics上，producer负责选择某条消息分配到哪个分区上。这个可以通过round-robin来实现负载均衡。
 
+### Consumers 消费者
 
+Consumers是放在一个消费者组(consumer group)里面的, 每条消息只能由consumer group里面的某一个consumer来消费，同一个consumer group不会
+重复消费同一条消息。
+
+consumer group里面的consumer可以发布在同一台机器的不同进程里面也可以分布不同的服务器上。
+
+如果多个consumer有相同的consumer group name，消息将会均衡的分配到组里的各个consumer中。
+
+如果多个consumer有不同的consumer group name，每条消息将会广播到使用的consumer中。
+
+消息消费图示：
+
+![consumer-groups](doc/img/consumer-groups.png)
+
+Kafka只能保证在一个分区里面的消息是有序的。不同分区之间的顺序是无法保证的。
+
+通过消息中的key值来保证不同分区的顺序。
+
+如果你想要一个可靠的顺序，你可以通过对一个topic只分配一个分区(partition)来实现，这样每个consumer group里面只能由一个consumer来消费消息。
+
+### Guarantees 保证
+1. 对于发送到同一个分区的消息，能保证消息存放的顺序与消息发送的顺序一致。
+2. 对于每一个consumer它看到的所有消息是有序存储的。
+3.
+
+At a high-level Kafka gives the following guarantees:
+
+    Messages sent by a producer to a particular topic partition will be appended in the order they are sent.
+    That is, if a record M1 is sent by the same producer as a record M2, and M1 is sent first,
+    then M1 will have a lower offset than M2 and appear earlier in the log.
+    A consumer instance sees records in the order they are stored in the log.
+    For a topic with replication factor N, we will tolerate up to N-1 server failures without losing any records committed to the log.
+
+More details on these guarantees are given in the design section of the documentation.
 
 
 
