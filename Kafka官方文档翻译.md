@@ -114,17 +114,80 @@ Kafka只能保证在一个分区里面的消息是有序的。不同分区之间
 ### Guarantees 保证
 1. 对于发送到同一个分区的消息，能保证消息存放的顺序与消息发送的顺序一致。
 2. 对于每一个consumer它看到的所有消息是有序存储的。
-3.
+3. 对于一个具有N个副本的Topic, 能够容错N-1个服务器宕机，二不会导致数据丢失
 
-At a high-level Kafka gives the following guarantees:
+### Kafka 作为一个消息系统
 
-    Messages sent by a producer to a particular topic partition will be appended in the order they are sent.
-    That is, if a record M1 is sent by the same producer as a record M2, and M1 is sent first,
-    then M1 will have a lower offset than M2 and appear earlier in the log.
-    A consumer instance sees records in the order they are stored in the log.
-    For a topic with replication factor N, we will tolerate up to N-1 server failures without losing any records committed to the log.
+传统的信息系统有两种模式：信息队列和发布订阅。
 
-More details on these guarantees are given in the design section of the documentation.
+Kafka里面
+信息队列模式：一个Topic可以有一个consumer group(含多个consumer)，
+发布订阅模式：也可以有多个consumer groups每个consumer group(含多个consumer)。
+
+Kafka模式下每个topic都有这样的优势：1.可以扩展处理器 2.也可以扩展多个订阅者
+
+Kafka比传统的信息系统有更可靠的消息顺序的保证。
+
+传统的队列是在服务器端维护消息的顺序的。
+
+当多个消费者同时消费消息时虽然信息从服务器端的出栈是有序的，然而消息是通过异步的方式发送到不能的消费者那边去的，所以达到消费者时消息的顺序无法保证。
+
+只能提供控制消费者数量，一个队列只允许一个消费者处理，来保证消息的顺序。这样也就失去了并发处理的特性。
+
+Kafka是通过topics的分区(partition)来保持并发特性的
+提供consumer group Kafka既能保证顺序也能保证负载均衡。
+
+每一个分区(partition)有且只有一个consumer(在一个consumer group中)与之对应。这样就能保证消息消费的顺序。
+
+**注意** 在一个consumer group中consumer的个数不能比分区(partition)个数多。
+
+
+### Kafka作为一个存储系统
+
+如何的消息队列都允许将生产消息与消费消息解耦。
+
+不同的是Kafka是一个非常好的存储系统。
+
+数据写到Kafka就是写到磁盘并且会复制它们为了容错。
+
+Kafka允许消费者等待ACK通知：只有消息被完全复制到多个副本并且持久化成功才能算写入成功。
+
+在Kafka中不管是50 KB的消息还是50 TB的消息持久化的性能是一样的。
+
+你可以将Kafka作为一个专门的高性能、低延迟的文件系统来进行日志的存储、复制及传播
+
+
+
+### Kafka for Stream Processing
+
+It isn't enough to just read, write, and store streams of data, the purpose is to enable real-time processing of streams.
+
+In Kafka a stream processor is anything that takes continual streams of data from input topics, performs some processing on this input, and produces continual streams of data to output topics.
+
+For example, a retail application might take in input streams of sales and shipments, and output a stream of reorders and price adjustments computed off this data.
+
+It is possible to do simple processing directly using the producer and consumer APIs. However for more complex transformations Kafka provides a fully integrated Streams API. This allows building applications that do non-trivial processing that compute aggregations off of streams or join streams together.
+
+This facility helps solve the hard problems this type of application faces: handling out-of-order data, reprocessing input as code changes, performing stateful computations, etc.
+
+The streams API builds on the core primitives Kafka provides: it uses the producer and consumer APIs for input, uses Kafka for stateful storage, and uses the same group mechanism for fault tolerance among the stream processor instances.
+
+### Putting the Pieces Together
+
+This combination of messaging, storage, and stream processing may seem unusual but it is essential to Kafka's role as a streaming platform.
+
+A distributed file system like HDFS allows storing static files for batch processing. Effectively a system like this allows storing and processing historical data from the past.
+
+A traditional enterprise messaging system allows processing future messages that will arrive after you subscribe. Applications built in this way process future data as it arrives.
+
+Kafka combines both of these capabilities, and the combination is critical both for Kafka usage as a platform for streaming applications as well as for streaming data pipelines.
+
+By combining storage and low-latency subscriptions, streaming applications can treat both past and future data the same way. That is a single application can process historical, stored data but rather than ending when it reaches the last record it can keep processing as future data arrives. This is a generalized notion of stream processing that subsumes batch processing as well as message-driven applications.
+
+Likewise for streaming data pipelines the combination of subscription to real-time events make it possible to use Kafka for very low-latency pipelines; but the ability to store data reliably make it possible to use it for critical data where the delivery of data must be guaranteed or for integration with offline systems that load data only periodically or may go down for extended periods of time for maintenance. The stream processing facilities make it possible to transform data as it arrives.
+
+For more information on the guarantees, APIs, and capabilities Kafka provides see the rest of the documentation.
+
 
 
 
