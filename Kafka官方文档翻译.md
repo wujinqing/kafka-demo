@@ -158,45 +158,76 @@ Kafka允许消费者等待ACK通知：只有消息被完全复制到多个副本
 
 
 
-### Kafka for Stream Processing
+### Kafka 流式处理
+Kafka并不满足与读、写、存储流数据，它的目标是能够实时的处理流数据
 
-It isn't enough to just read, write, and store streams of data, the purpose is to enable real-time processing of streams.
+Kafka的流式处理是不断的从input topics中获取数据，经过一系列的处理，输出到output topics。
 
-In Kafka a stream processor is anything that takes continual streams of data from input topics, performs some processing on this input, and produces continual streams of data to output topics.
+对于一些简单的处理使用producer and consumer APIs就行了，对于一些复杂的数据转换可以使用Streams API。
 
-For example, a retail application might take in input streams of sales and shipments, and output a stream of reorders and price adjustments computed off this data.
+允许应用对流进行聚合处理，或者将多个流合并在一起。
 
-It is possible to do simple processing directly using the producer and consumer APIs. However for more complex transformations Kafka provides a fully integrated Streams API. This allows building applications that do non-trivial processing that compute aggregations off of streams or join streams together.
+解决如下难题：处理无序的数据、但状态发生变化时重新处理数据、执行有状态的计算。
 
-This facility helps solve the hard problems this type of application faces: handling out-of-order data, reprocessing input as code changes, performing stateful computations, etc.
-
-The streams API builds on the core primitives Kafka provides: it uses the producer and consumer APIs for input, uses Kafka for stateful storage, and uses the same group mechanism for fault tolerance among the stream processor instances.
+streams API是构建在Kafka基础的核心API之上的：
+1. 使用producer and consumer APIs作为输入端。
+2. 使用Kafka存储状态。
+3. 使用一组相同的机器对于多个stream processor示例进行容错。
 
 ### Putting the Pieces Together
+Kafka作为流平台 集消息、存储、流处理于一体。
+结合存储和低延迟的订阅，流平台应用能够对过去的数据和未来即将到来的数据以一种相同的方式来处理。基本概念 - 消息驱动应用
 
-This combination of messaging, storage, and stream processing may seem unusual but it is essential to Kafka's role as a streaming platform.
-
-A distributed file system like HDFS allows storing static files for batch processing. Effectively a system like this allows storing and processing historical data from the past.
-
-A traditional enterprise messaging system allows processing future messages that will arrive after you subscribe. Applications built in this way process future data as it arrives.
-
-Kafka combines both of these capabilities, and the combination is critical both for Kafka usage as a platform for streaming applications as well as for streaming data pipelines.
-
-By combining storage and low-latency subscriptions, streaming applications can treat both past and future data the same way. That is a single application can process historical, stored data but rather than ending when it reaches the last record it can keep processing as future data arrives. This is a generalized notion of stream processing that subsumes batch processing as well as message-driven applications.
-
-Likewise for streaming data pipelines the combination of subscription to real-time events make it possible to use Kafka for very low-latency pipelines; but the ability to store data reliably make it possible to use it for critical data where the delivery of data must be guaranteed or for integration with offline systems that load data only periodically or may go down for extended periods of time for maintenance. The stream processing facilities make it possible to transform data as it arrives.
-
-For more information on the guarantees, APIs, and capabilities Kafka provides see the rest of the documentation.
+Kafka既可以作为流平台，也可以作为流管道。
 
 
+## 使用案例
+
+### Messaging 消息
+
+相比于大多数消息系统Kafka具有更好的吞吐量。
+
+內建的分区、复制集、容错机制使得Kafka可作为大量数据的可扩展的消息处理系统。
+
+### Website Activity Tracking
+收集页面访问、搜索、或者其他用户可能触发的操作。
+将每个不同类型的操作发送到不同的topics上。
+构建实时处理、实时监测、将数据加载到Hadoop。
+
+### Metrics
+Kafka经常用于监听操作数据。
+
+
+### Log Aggregation
+Kafka提供良好的性能、强的持久化保证(由于复制集)及更低的端对端延迟
+
+### Stream Processing 流式处理
+流式处理的几个阶段：从Kafka topics中加载原始数据、然后进行聚合、aggregated, enriched、或者其他将数据转换到新的topics中以备后续处理。
+
+### Event Sourcing
+
+### Commit Log
 
 
 
+##  APIs
 
+### Producer API
+将消息发送到Kafka集群的topic上
 
+### Consumer API
+从Kafka集群的topic上读取消息
 
+### Streams API
+将消息从 input topics 经过一系列处理转到output topics中。
 
+### Connect API
+将数据有文件系统中导入到Kafka中，或者将数据从Kafka中存储到数据库中。
 
+### AdminClient API
+管理和检查：topics, brokers, acls, and other Kafka objects.
+
+### Legacy APIs 遗留的API
 
 
 
